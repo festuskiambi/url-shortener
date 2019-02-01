@@ -16,14 +16,13 @@ class UrlsController < ApplicationController
   end
 
   private
-  
+
   def url_params
     params.permit(:original_url)
   end
 
   def set_url
     @url = Url.find_by_short_url(params[:id])
-
   end
 
 end
