@@ -9,7 +9,7 @@ RSpec.describe 'Url', type: :request do
       before { post '/urls', params: valid_attributes }
 
       it "creates a shorted url " do
-        expect(json['original_url']).to eq('http://example.com')
+        expect(json['short_url']).to match(/\A[a-z\d]{6}\z/i)
       end
 
       it 'returns status code 201' do
