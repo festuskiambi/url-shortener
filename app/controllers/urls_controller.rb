@@ -1,7 +1,7 @@
 class UrlsController < ApplicationController
   before_action :set_url, only: [:show, :update, :destroy]
   def create
-    @url = Url.create(url_params)
+    @url = Url.create!(url_params)
     json_response(@url, :created)
   end
 
