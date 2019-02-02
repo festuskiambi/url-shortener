@@ -5,7 +5,7 @@ class AuthorizeApiRequest
 
   def call
     {
-      user: user
+       user: user
     }
   end
 
@@ -25,8 +25,8 @@ class AuthorizeApiRequest
       ("#{Message.invalid_token} #{e.message}")
     )
   end
-  
-  #decode authentication token
+
+  # decode authentication token
   def decoded_auth_token
     @decoded_auth_token ||= JsonWebToken.decode(http_auth_header)
   end
@@ -36,7 +36,7 @@ class AuthorizeApiRequest
     if headers['Authorization']. present?
       return headers['Authorization'].split(' ').last
     end
+
     raise(ExceptionHandler::MissingToken, Message.missing_token)
   end
-
 end
