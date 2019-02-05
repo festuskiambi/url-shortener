@@ -1,14 +1,28 @@
 require 'rails_helper'
 
-RSpec.describe 'Url', type: :request do
+RSpec.describe 'Url API', type: :request do
+  let(:user) { create(:user) }
+  let(:headers) { valid_headers }
  
   describe 'POST/ urls' do
-    let(:valid_attributes) { { original_url: 'http://example.com' } }
-   
-    context 'when the request is valid' do
-      before { post '/urls', params: valid_attributes }
+    let(:valid_attributes) do
+      {
+        original_url: 'http://example.com',
+        created_by: user.id.to_s
+      }.to_json
+    end
 
-      it "creates a shorted url " do
+    let(:invalid_attributes) do
+      {
+        original_url: nil,
+        created_by: user.id.to_s
+      }.to_json
+    end
+
+    context 'when the request is valid' do
+      before { post '/urls', params: valid_attributes, headers: headers }
+
+      it 'creates a shorted url ' do
         expect(json['short_url']).to match(/\A[a-z\d]{6}\z/i)
       end
 
@@ -18,10 +32,10 @@ RSpec.describe 'Url', type: :request do
     end
 
     context 'when the request is invalid' do
-      before { post '/urls', params: { short_url: 'btly'} }
+      before { post '/urls', params: invalid_attributes, headers: headers }
 
       it 'returns a validation failure message' do
-        expect(response.body)
+        expect(json['message'])
           .to match(/Validation failed: Original url can't be blank/)
       end
 
@@ -35,7 +49,7 @@ RSpec.describe 'Url', type: :request do
   describe 'GET urls/:short_url' do
     let!(:urls) { create_list(:url, 10) }
 
-    before { get "/urls/#{short_url}" }
+    before { get "/urls/#{short_url}",params: {}, headers: headers }
     context 'when record is found' do
       let(:short_url) { urls.first.short_url }
 
